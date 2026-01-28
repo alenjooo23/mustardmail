@@ -98,6 +98,7 @@ class YouTubeScraper:
                         'channel_id': item['id'],
                         'channel_name': snippet.get('title', ''),
                         'description': snippet.get('description', ''),
+                        'country': snippet.get('country', ''),
                         'subscriber_count': subscriber_count,
                         'video_count': video_count,
                         'total_views': view_count,
@@ -226,6 +227,25 @@ class YouTubeScraper:
         logger.info("Filtered by activity (since %s): %d of %d channels",
                      min_date.strftime('%Y-%m-%d'), len(active_channels), len(channels))
         return active_channels
+
+    def filter_by_country(self, channels, allowed_countries):
+        """Filter channels to only include those from allowed countries.
+
+        Args:
+            channels: List of channel dictionaries.
+            allowed_countries: List of ISO 3166-1 alpha-2 country codes (e.g. ['US', 'CA', 'GB']).
+
+        Returns:
+            List of channels from allowed countries.
+        """
+        allowed = set(c.upper() for c in allowed_countries)
+        filtered = [
+            ch for ch in channels
+            if ch.get('country', '').upper() in allowed
+        ]
+        logger.info("Filtered by country (%s): %d of %d channels",
+                     ', '.join(sorted(allowed)), len(filtered), len(channels))
+        return filtered
 
     def filter_by_no_twitter(self, channels):
         """Remove channels that have Twitter/X presence in their description.

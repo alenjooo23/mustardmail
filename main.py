@@ -12,7 +12,8 @@ from data_processor import rank_channels, export_to_csv
 MIN_SUBSCRIBERS = 10000
 MAX_SUBSCRIBERS = 500000
 MIN_UPLOAD_DATE = datetime(2025, 1, 1, tzinfo=timezone.utc)
-MAX_RESULTS = 200  # Total channels to process across all keywords
+MAX_RESULTS = 500  # Total channels to process across all keywords
+ALLOWED_COUNTRIES = ['US', 'CA', 'GB']  # United States, Canada, United Kingdom
 
 KEYWORDS = [
     "business tips",
@@ -62,7 +63,7 @@ def main():
     scraper = YouTubeScraper(api_key)
 
     # ── Step 1: Search for Channels ───────────────────────────────────────────
-    print("[Step 1/5] Searching for channels...")
+    print("[Step 1/6] Searching for channels...")
     all_channel_ids = set()  # Use set for deduplication
     keyword_map = {}  # Track which keyword found each channel
 
@@ -100,8 +101,17 @@ def main():
         print("No channels match the subscriber criteria.")
         sys.exit(0)
 
-    # ── Step 2: Filter by Recent Activity ─────────────────────────────────────
-    print("[Step 2/5] Checking upload activity (2025+)...")
+    # ── Step 2: Filter by Country ─────────────────────────────────────────────
+    print("[Step 2/6] Filtering by country (US, CA, UK)...")
+    channels = scraper.filter_by_country(channels, ALLOWED_COUNTRIES)
+    print(f"  Channels in allowed countries: {len(channels)}\n")
+
+    if not channels:
+        print("No channels match the country criteria.")
+        sys.exit(0)
+
+    # ── Step 3: Filter by Recent Activity ─────────────────────────────────────
+    print("[Step 3/6] Checking upload activity (2025+)...")
     channels = scraper.filter_by_activity(channels, MIN_UPLOAD_DATE)
     print(f"  Active channels (uploaded since {MIN_UPLOAD_DATE.strftime('%Y-%m-%d')}): {len(channels)}\n")
 
@@ -109,8 +119,8 @@ def main():
         print("No channels have recent uploads matching the date filter.")
         sys.exit(0)
 
-    # ── Step 3: Filter by No Twitter ──────────────────────────────────────────
-    print("[Step 3/5] Filtering out channels with Twitter/X presence...")
+    # ── Step 4: Filter by No Twitter ──────────────────────────────────────────
+    print("[Step 4/6] Filtering out channels with Twitter/X presence...")
     channels = scraper.filter_by_no_twitter(channels)
     print(f"  Channels without Twitter/X: {len(channels)}\n")
 
@@ -118,8 +128,8 @@ def main():
         print("All remaining channels have Twitter/X presence.")
         sys.exit(0)
 
-    # ── Step 4: Rank Channels ─────────────────────────────────────────────────
-    print("[Step 4/5] Ranking channels by engagement...")
+    # ── Step 5: Rank Channels ─────────────────────────────────────────────────
+    print("[Step 5/6] Ranking channels by engagement...")
     channels = rank_channels(channels)
 
     tier_counts = {'A': 0, 'B': 0, 'C': 0}
@@ -130,8 +140,8 @@ def main():
     print(f"  Tier B (solid channels) : {tier_counts['B']}")
     print(f"  Tier C (emerging)       : {tier_counts['C']}\n")
 
-    # ── Step 5: Export to CSV ─────────────────────────────────────────────────
-    print("[Step 5/5] Exporting results to CSV...")
+    # ── Step 6: Export to CSV ─────────────────────────────────────────────────
+    print("[Step 6/6] Exporting results to CSV...")
     filename = export_to_csv(channels)
     print(f"  Saved to: {filename}\n")
 
