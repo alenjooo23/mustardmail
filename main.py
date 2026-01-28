@@ -12,7 +12,7 @@ from data_processor import rank_channels, export_to_csv
 MIN_SUBSCRIBERS = 10000
 MAX_SUBSCRIBERS = 500000
 MIN_UPLOAD_DATE = datetime(2025, 1, 1, tzinfo=timezone.utc)
-MAX_RESULTS = 500  # Total channels to process across all keywords
+MAX_RESULTS = 2000  # Total channels to process across all keywords
 ALLOWED_COUNTRIES = ['US', 'CA', 'GB']  # United States, Canada, United Kingdom
 
 KEYWORDS = [
@@ -26,6 +26,16 @@ KEYWORDS = [
     "business strategy",
     "sales training",
     "solopreneur",
+    "side hustle",
+    "passive income",
+    "ecommerce tips",
+    "marketing strategy",
+    "personal branding",
+    "freelancing tips",
+    "business growth",
+    "leadership tips",
+    "money management",
+    "content creator tips",
 ]
 
 # ── Logging Setup ─────────────────────────────────────────────────────────────

@@ -231,20 +231,25 @@ class YouTubeScraper:
     def filter_by_country(self, channels, allowed_countries):
         """Filter channels to only include those from allowed countries.
 
+        Channels with no country set are kept (many creators don't fill this in).
+        Only channels that explicitly list a country outside the allowed list
+        are removed.
+
         Args:
             channels: List of channel dictionaries.
             allowed_countries: List of ISO 3166-1 alpha-2 country codes (e.g. ['US', 'CA', 'GB']).
 
         Returns:
-            List of channels from allowed countries.
+            List of channels from allowed countries (or with no country set).
         """
         allowed = set(c.upper() for c in allowed_countries)
         filtered = [
             ch for ch in channels
-            if ch.get('country', '').upper() in allowed
+            if not ch.get('country') or ch['country'].upper() in allowed
         ]
-        logger.info("Filtered by country (%s): %d of %d channels",
-                     ', '.join(sorted(allowed)), len(filtered), len(channels))
+        excluded = len(channels) - len(filtered)
+        logger.info("Filtered by country (%s): %d of %d channels (%d excluded)",
+                     ', '.join(sorted(allowed)), len(filtered), len(channels), excluded)
         return filtered
 
     def filter_by_no_twitter(self, channels):
