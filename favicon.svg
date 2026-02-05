@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4C430;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2C5AA0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#gradient)"/>
+  
+  <!-- Mustard seed (simplified seed shape) -->
+  <ellipse cx="50" cy="50" rx="18" ry="22" fill="white" opacity="0.95"/>
+  
+  <!-- Small sprout coming from seed -->
+  <path d="M 50 28 Q 45 20, 42 15 Q 40 12, 38 12 Q 36 12, 35 14" 
+        stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.95"/>
+  
+  <!-- Leaf on sprout -->
+  <ellipse cx="39" cy="16" rx="4" ry="6" fill="white" opacity="0.95" transform="rotate(-30 39 16)"/>
+</svg>
